@@ -1,5 +1,7 @@
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import axios from "axios"
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"
 
 function AddCompany({ refreshCompanies }) {
   const [isManualEntry, setIsManualEntry] = useState(true)
@@ -24,8 +26,28 @@ function AddCompany({ refreshCompanies }) {
     })
   }
 
-  const handleSubmit = async (e) => {
+  const validateForm = () => {
+    if (isManualEntry) {
+      const requiredFields = ["name", "EBIT", "marketCap", "debt", "cash", "netFixedAssets", "netWorkingCapital"]
+      for (const field of requiredFields) {
+        if (!formData[field]) {
+          setError(`${field.charAt(0).toUpperCase() + field.slice(1)} is required`)
+          return false
+        }
+      }
+    } else {
+      if (!symbol) {
+        setError("Stock symbol is required")
+        return false
+      }
+    }
+    return true
+  }
+
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault()
+    if (!validateForm()) return
+
     setIsLoading(true)
     setError(null)
 
@@ -41,9 +63,9 @@ function AddCompany({ refreshCompanies }) {
           netFixedAssets: Number.parseFloat(formData.netFixedAssets),
           netWorkingCapital: Number.parseFloat(formData.netWorkingCapital),
         }
-        await axios.post("http://localhost:5000/api/companies", dataToSend)
+        await axios.post(`${API_URL}/api/companies`, dataToSend)
       } else {
-        await axios.get(`http://localhost:5000/api/company/${symbol}`)
+        await axios.get(`${API_URL}/api/company/${symbol}`)
       }
 
       setFormData({
@@ -61,12 +83,14 @@ function AddCompany({ refreshCompanies }) {
     } catch (err) {
       console.error(err)
       setError(
-        isManualEntry ? "Error adding company. Please try again." : "Error fetching company data. Please try again.",
+        isManualEntry 
+          ? "Error adding company. Please try again." 
+          : `Error fetching company data for ${symbol}. Please check the symbol and try again.`
       )
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [isManualEntry, formData, symbol, refreshCompanies, validateForm])
 
   return (
     <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -186,7 +210,7 @@ function AddCompany({ refreshCompanies }) {
           {isLoading ? "Processing..." : isManualEntry ? "Add Company" : "Fetch Company Data"}
         </button>
       </form>
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <div className="mt-2 text-sm text-red-600 bg-red-100 border border-red-400 rounded p-2">{error}</div>}
     </div>
   )
 }

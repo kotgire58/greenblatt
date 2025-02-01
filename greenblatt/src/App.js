@@ -1,18 +1,20 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import axios from "axios"
 import AddCompany from "./components/AddCompany"
 import CompaniesTable from "./components/CompaniesTable"
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"
 
 function App() {
   const [companies, setCompanies] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const refreshCompanies = async () => {
+  const refreshCompanies = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
-      const response = await axios.get("http://localhost:5000/api/companies")
+      const response = await axios.get(`${API_URL}/api/companies`)
       setCompanies(response.data)
     } catch (err) {
       console.error("Error details:", err.response ? err.response.data : err.message)
@@ -20,10 +22,11 @@ function App() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
   const deleteCompany = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/companies/${id}`)
+      await axios.delete(`${API_URL}/api/companies/${id}`)
       await refreshCompanies()
     } catch (err) {
       console.error("Error deleting company:", err)
@@ -33,7 +36,7 @@ function App() {
 
   useEffect(() => {
     refreshCompanies()
-  }, []) //This is the line that needed to be updated.  The empty array [] means that the effect only runs once after the initial render.  If you wanted it to run every time companies changed, you would put [companies] here.
+  }, [refreshCompanies])
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -47,6 +50,9 @@ function App() {
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
           <strong className="font-bold">Error!</strong>
           <span className="block sm:inline"> {error}</span>
+          <button className="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setError(null)}>
+            <span className="text-2xl">&times;</span>
+          </button>
         </div>
       )}
 
