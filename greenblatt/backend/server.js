@@ -15,7 +15,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 
 // MongoDB Connection
-const MONGO_URI = "mongodb://localhost:27017/Stock"
+const MONGO_URI = "mongodb+srv://kotgirek:Junksite%401234567@greenblatt.shxtp.mongodb.net/greenblatt?retryWrites=true&w=majority&appName=Greenblatt";
 mongoose
   .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB Connected"))
@@ -79,7 +79,7 @@ app.get("/api/companies", async (req, res) => {
     let companies = await Company.find()
 
     if (!companies || companies.length === 0) {
-      return res.status(404).json({ error: "No companies found in the database." })
+      return res.status(404).json({ error: "No companies found in the database.", })
     }
 
     companies = companies.map((c) => {
