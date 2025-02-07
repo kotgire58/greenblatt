@@ -11,6 +11,7 @@ const Header = () => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "App", path: "/app" },
+    { name: "Dashboard", path: "/dashboard" },
     { name: "About", path: "/about" },
     { name: "Resources", path: "/resources" },
     { name: "Contact", path: "/contact" },

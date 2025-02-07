@@ -2,6 +2,7 @@
 
 import { Link } from "react-router-dom"
 import { useSpring, animated, config } from "react-spring"
+import { BookOpen, TrendingUp, PieChart, DollarSign } from "lucide-react"
 
 const HomePage = () => {
   const fadeIn = useSpring({
@@ -34,16 +35,39 @@ const HomePage = () => {
     >
       <div className="max-w-4xl mx-auto">
         <animated.h1 style={slideUp} className="text-5xl font-bold mb-8 text-center text-indigo-900">
-          Welcome to Magic Formula Investing
+          Magic Formula Investing
         </animated.h1>
 
         <animated.div style={fadeIn} className="bg-white bg-opacity-80 rounded-lg p-8 mb-8 shadow-lg">
           <h2 className="text-3xl font-semibold mb-4 text-indigo-900">Discover Undervalued Stocks</h2>
           <p className="mb-4 text-indigo-800">
-            Magic Formula Investing is a powerful strategy that helps you identify high-quality companies trading at
-            attractive valuations. Our tool simplifies the process, allowing you to make informed investment decisions.
+            Magic Formula Investing, developed by Joel Greenblatt, is a powerful strategy that helps you identify
+            high-quality companies trading at attractive valuations. Our tool simplifies the process, allowing you to
+            make informed investment decisions.
           </p>
           <p className="mb-4 text-indigo-800">Start your journey to smarter investing today!</p>
+        </animated.div>
+
+        <animated.div style={slideUp} className="bg-white bg-opacity-80 rounded-lg p-8 mb-8 shadow-lg">
+          <h2 className="text-3xl font-semibold mb-4 text-indigo-900">Key Principles</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-start">
+              <TrendingUp className="mr-2 text-indigo-600" />
+              <div>
+                <h3 className="font-semibold text-indigo-800">Earnings Yield</h3>
+                <p className="text-indigo-700">Identifies companies with high earnings relative to their price</p>
+              </div>
+            </div>
+            <div className="flex items-start">
+              <PieChart className="mr-2 text-indigo-600" />
+              <div>
+                <h3 className="font-semibold text-indigo-800">Return on Capital</h3>
+                <p className="text-indigo-700">
+                  Focuses on companies that efficiently generate profits from their assets
+                </p>
+              </div>
+            </div>
+          </div>
         </animated.div>
 
         <animated.div style={slideUp} className="bg-white bg-opacity-80 rounded-lg p-8 mb-8 shadow-lg">
@@ -57,6 +81,26 @@ const HomePage = () => {
           <p className="text-indigo-800">
             Our tool does the heavy lifting, so you can focus on building your portfolio.
           </p>
+        </animated.div>
+
+        <animated.div style={fadeIn} className="bg-white bg-opacity-80 rounded-lg p-8 mb-8 shadow-lg">
+          <h2 className="text-3xl font-semibold mb-4 text-indigo-900">Why Use Our Tool?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-start">
+              <DollarSign className="mr-2 text-indigo-600" />
+              <div>
+                <h3 className="font-semibold text-indigo-800">Data-Driven Decisions</h3>
+                <p className="text-indigo-700">Make investment choices based on solid financial metrics</p>
+              </div>
+            </div>
+            <div className="flex items-start">
+              <BookOpen className="mr-2 text-indigo-600" />
+              <div>
+                <h3 className="font-semibold text-indigo-800">Educational Resources</h3>
+                <p className="text-indigo-700">Learn more about value investing and the Magic Formula strategy</p>
+              </div>
+            </div>
+          </div>
         </animated.div>
 
         <animated.div style={pulse} className="text-center">
