@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 
 function CompaniesTable({ companies, deleteCompany }) {
@@ -43,70 +45,64 @@ function CompaniesTable({ companies, deleteCompany }) {
         <table className="min-w-full bg-white border border-gray-300" role="table">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-2 text-left" onClick={() => handleSort("name")} role="columnheader">
+              <th className="px-2 py-2 text-left text-xs" onClick={() => handleSort("name")}>
                 Name {renderSortIcon("name")}
               </th>
-              <th className="px-4 py-2 text-right" onClick={() => handleSort("EBIT")} role="columnheader">
+              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("EBIT")}>
                 EBIT {renderSortIcon("EBIT")}
               </th>
-              <th
-                className="px-4 py-2 text-right"
-                onClick={() => handleSort("computedEnterpriseValue")}
-                role="columnheader"
-              >
-                Enterprise Value {renderSortIcon("computedEnterpriseValue")}
+              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("computedEnterpriseValue")}>
+                EV {renderSortIcon("computedEnterpriseValue")}
               </th>
-              <th className="px-4 py-2 text-right" onClick={() => handleSort("earningYield")} role="columnheader">
-                Earning Yield {renderSortIcon("earningYield")}
+              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("earningYield")}>
+                EY {renderSortIcon("earningYield")}
               </th>
-              <th className="px-4 py-2 text-right" onClick={() => handleSort("earningYieldRank")} role="columnheader">
-                Earning Yield Rank {renderSortIcon("earningYieldRank")}
+              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("earningYieldRank")}>
+                EY Rank {renderSortIcon("earningYieldRank")}
               </th>
-              <th className="px-4 py-2 text-right" onClick={() => handleSort("ROC")} role="columnheader">
+              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("ROC")}>
                 ROC {renderSortIcon("ROC")}
               </th>
-              <th className="px-4 py-2 text-right" onClick={() => handleSort("ROCRank")} role="columnheader">
+              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("ROCRank")}>
                 ROC Rank {renderSortIcon("ROCRank")}
               </th>
-              <th className="px-4 py-2 text-right" onClick={() => handleSort("greenBlattsValue")} role="columnheader">
-                Greenblatt's Value {renderSortIcon("greenBlattsValue")}
+              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("greenBlattsValue")}>
+                GBV {renderSortIcon("greenBlattsValue")}
               </th>
-              <th className="px-4 py-2 text-center" role="columnheader">
-                Actions
-              </th>
+              <th className="px-2 py-2 text-center text-xs">Actions</th>
             </tr>
           </thead>
           <tbody>
             {sortedCompanies.map((company) => (
               <tr key={company._id} className="border-t border-gray-200 hover:bg-gray-50" role="row">
-                <td className="px-4 py-2" role="cell">
+                <td className="px-2 py-2 text-sm" role="cell">
                   {company.name}
                 </td>
-                <td className="px-4 py-2 text-right" role="cell">
+                <td className="px-2 py-2 text-right text-sm" role="cell">
                   {formatNumber(company.EBIT)}
                 </td>
-                <td className="px-4 py-2 text-right" role="cell">
+                <td className="px-2 py-2 text-right text-sm" role="cell">
                   {formatNumber(company.computedEnterpriseValue)}
                 </td>
-                <td className="px-4 py-2 text-right" role="cell">
-                  {formatNumber(company.earningYield*100, 3)}%
+                <td className="px-2 py-2 text-right text-sm" role="cell">
+                  {formatNumber(company.earningYield * 100, 2)}%
                 </td>
-                <td className="px-4 py-2 text-right" role="cell">
+                <td className="px-2 py-2 text-right text-sm" role="cell">
                   {company.earningYieldRank}
                 </td>
-                <td className="px-4 py-2 text-right" role="cell">
-                  {formatNumber(company.ROC*100, 2)}%
+                <td className="px-2 py-2 text-right text-sm" role="cell">
+                  {formatNumber(company.ROC * 100, 2)}%
                 </td>
-                <td className="px-4 py-2 text-right" role="cell">
+                <td className="px-2 py-2 text-right text-sm" role="cell">
                   {company.ROCRank}
                 </td>
-                <td className="px-4 py-2 text-right" role="cell">
+                <td className="px-2 py-2 text-right text-sm" role="cell">
                   {company.greenBlattsValue}
                 </td>
-                <td className="px-4 py-2 text-center" role="cell">
+                <td className="px-2 py-2 text-center text-sm" role="cell">
                   <button
                     onClick={() => handleDelete(company._id, company.name)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs focus:outline-none focus:shadow-outline"
                     aria-label={`Delete ${company.name}`}
                   >
                     Delete
