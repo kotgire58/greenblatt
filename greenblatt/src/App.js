@@ -72,7 +72,7 @@ function App() {
           </Routes>
         </main>
         <footer className="bg-gray-200 py-4 text-center">
-          <p>&copy; 2023 Magic Formula Investing. All rights reserved.</p>
+          <p>&copy; 2025 Kamal Kotgire Investing. All rights reserved.</p>
         </footer>
       </div>
     </Router>
