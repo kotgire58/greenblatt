@@ -11,12 +11,16 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@upstash/redis": "^1.36.2",
     "axios": "^1.13.5",
     "backend": "file:",
     "cors": "^2.8.5",
+    "csv-parse": "^6.1.0",
     "express": "^4.21.2",
     "express-rate-limit": "^8.2.1",
     "mongoose": "^8.9.5",
+    "multer": "^2.0.2",
+    "tesseract.js": "^7.0.0",
     "yahoo-finance2": "^3.13.1"
   }
 }

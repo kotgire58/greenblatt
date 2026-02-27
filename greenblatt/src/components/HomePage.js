@@ -1,120 +1,147 @@
 "use client"
 
 import { Link } from "react-router-dom"
-import { useSpring, animated, config } from "react-spring"
-import { BookOpen, TrendingUp, PieChart, DollarSign } from "lucide-react"
+import { motion } from "framer-motion"
+import { TrendingUp, PieChart, ShieldCheck, BarChart3 } from "lucide-react"
 
 const HomePage = () => {
-  const fadeIn = useSpring({
-    opacity: 1,
-    from: { opacity: 0 },
-    config: config.molasses,
-  })
-
-  const slideUp = useSpring({
-    transform: "translateY(0px)",
-    from: { transform: "translateY(50px)" },
-    config: config.wobbly,
-  })
-
-  const pulse = useSpring({
-    to: async (next) => {
-      while (1) {
-        await next({ transform: "scale(1.05)" })
-        await next({ transform: "scale(1)" })
-      }
-    },
-    from: { transform: "scale(1)" },
-    config: config.gentle,
-  })
-
   return (
-    <animated.div
-      style={fadeIn}
-      className="min-h-screen bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-900 p-8"
-    >
-      <div className="max-w-4xl mx-auto">
-        <animated.h1 style={slideUp} className="text-5xl font-bold mb-8 text-center text-indigo-900">
-          Magic Formula Investing
-        </animated.h1>
+    <div className="min-h-screen px-6 py-20">
+      <div className="max-w-6xl mx-auto">
 
-        <animated.div style={fadeIn} className="bg-white bg-opacity-80 rounded-lg p-8 mb-8 shadow-lg">
-          <h2 className="text-3xl font-semibold mb-4 text-indigo-900">Discover Undervalued Stocks</h2>
-          <p className="mb-4 text-indigo-800">
-            Magic Formula Investing, developed by Joel Greenblatt, is a powerful strategy that helps you identify
-            high-quality companies trading at attractive valuations. Our tool simplifies the process, allowing you to
-            make informed investment decisions.
+        {/* HERO */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center"
+        >
+          <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight leading-tight">
+            Systematic <span className="text-emerald-400">Value Investing</span>
+          </h1>
+
+          <p className="mt-6 text-xl text-slate-400 max-w-3xl mx-auto">
+            Institutional-grade screening, ranking, and portfolio analytics
+            powered by quantitative metrics inspired by Joel Greenblatt
+            and Warren Buffett.
           </p>
-          <p className="mb-4 text-indigo-800">Start your journey to smarter investing today!</p>
-        </animated.div>
 
-        <animated.div style={slideUp} className="bg-white bg-opacity-80 rounded-lg p-8 mb-8 shadow-lg">
-          <h2 className="text-3xl font-semibold mb-4 text-indigo-900">Key Principles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-start">
-              <TrendingUp className="mr-2 text-indigo-600" />
-              <div>
-                <h3 className="font-semibold text-indigo-800">Earnings Yield</h3>
-                <p className="text-indigo-700">Identifies companies with high earnings relative to their price</p>
-              </div>
-            </div>
-            <div className="flex items-start">
-              <PieChart className="mr-2 text-indigo-600" />
-              <div>
-                <h3 className="font-semibold text-indigo-800">Return on Capital</h3>
-                <p className="text-indigo-700">
-                  Focuses on companies that efficiently generate profits from their assets
-                </p>
-              </div>
-            </div>
+          <div className="mt-10 flex justify-center gap-6">
+            <Link
+              to="/app"
+              className="px-8 py-4 rounded-xl bg-emerald-400 text-slate-900 font-bold text-lg hover:bg-emerald-300 transition shadow-lg"
+            >
+              Launch Screener
+            </Link>
+
+            <Link
+              to="/buffett"
+              className="px-8 py-4 rounded-xl border border-slate-700 text-slate-200 font-semibold hover:bg-slate-800 transition"
+            >
+              Buffett Analyzer
+            </Link>
           </div>
-        </animated.div>
+        </motion.div>
 
-        <animated.div style={slideUp} className="bg-white bg-opacity-80 rounded-lg p-8 mb-8 shadow-lg">
-          <h2 className="text-3xl font-semibold mb-4 text-indigo-900">How It Works</h2>
-          <ol className="list-decimal list-inside mb-4 text-indigo-800">
-            <li>Add companies to your watchlist</li>
-            <li>View financial metrics and rankings</li>
-            <li>Analyze top-performing stocks</li>
-            <li>Make informed investment decisions</li>
-          </ol>
-          <p className="text-indigo-800">
-            Our tool does the heavy lifting, so you can focus on building your portfolio.
+        {/* METRICS STRIP */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-24">
+          <MetricCard title="2 Core Factors" value="Earnings Yield + ROC" />
+          <MetricCard title="Automatic Ranking" value="Greenblatt Formula" />
+          <MetricCard title="Portfolio Engine" value="Weighted Exposure" />
+          <MetricCard title="Qualitative Layer" value="Buffett Scoring" />
+        </div>
+
+        {/* FEATURE SECTION */}
+        <div className="grid md:grid-cols-2 gap-12 mt-28 items-center">
+
+          <div>
+            <h2 className="text-4xl font-bold">
+              Quantitative Discipline.
+              <span className="text-emerald-400"> Zero Emotion.</span>
+            </h2>
+
+            <p className="mt-6 text-slate-400 text-lg">
+              The Magic Formula ranks companies based on high earnings yield
+              and high return on capital — combining value and quality into
+              a systematic framework.
+            </p>
+
+            <p className="mt-4 text-slate-400 text-lg">
+              QuantEdge automates this entire pipeline so you can focus
+              on capital allocation instead of spreadsheets.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <FeatureCard
+              icon={<TrendingUp />}
+              title="Factor-Based Screening"
+              desc="Rank companies automatically using value and efficiency metrics."
+            />
+            <FeatureCard
+              icon={<PieChart />}
+              title="Portfolio Analytics"
+              desc="Track weighted exposure, earnings yield, and capital returns."
+            />
+            <FeatureCard
+              icon={<BarChart3 />}
+              title="Ranking Visualization"
+              desc="Interactive charts for top-ranked companies."
+            />
+            <FeatureCard
+              icon={<ShieldCheck />}
+              title="Buffett Quality Overlay"
+              desc="Qualitative scoring layer inspired by Warren Buffett."
+            />
+          </div>
+        </div>
+
+        {/* FINAL CTA */}
+        <div className="mt-32 text-center">
+          <h3 className="text-3xl font-bold">
+            Build Smarter Portfolios.
+          </h3>
+
+          <p className="mt-4 text-slate-400">
+            Stop guessing. Start ranking.
           </p>
-        </animated.div>
 
-        <animated.div style={fadeIn} className="bg-white bg-opacity-80 rounded-lg p-8 mb-8 shadow-lg">
-          <h2 className="text-3xl font-semibold mb-4 text-indigo-900">Why Use Our Tool?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-start">
-              <DollarSign className="mr-2 text-indigo-600" />
-              <div>
-                <h3 className="font-semibold text-indigo-800">Data-Driven Decisions</h3>
-                <p className="text-indigo-700">Make investment choices based on solid financial metrics</p>
-              </div>
-            </div>
-            <div className="flex items-start">
-              <BookOpen className="mr-2 text-indigo-600" />
-              <div>
-                <h3 className="font-semibold text-indigo-800">Educational Resources</h3>
-                <p className="text-indigo-700">Learn more about value investing and the Magic Formula strategy</p>
-              </div>
-            </div>
-          </div>
-        </animated.div>
-
-        <animated.div style={pulse} className="text-center">
           <Link
             to="/app"
-            className="inline-block bg-indigo-600 text-white font-bold py-3 px-6 rounded-full hover:bg-indigo-700 transition duration-300 shadow-md"
+            className="inline-block mt-8 px-10 py-5 bg-emerald-400 text-slate-900 font-extrabold rounded-xl hover:bg-emerald-300 transition text-lg"
           >
             Get Started
           </Link>
-        </animated.div>
+        </div>
+
       </div>
-    </animated.div>
+    </div>
   )
 }
 
-export default HomePage
+/* ===== Reusable Cards ===== */
 
+const MetricCard = ({ title, value }) => (
+  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center hover:border-emerald-400/40 transition">
+    <div className="text-sm text-slate-500 uppercase tracking-wide">
+      {title}
+    </div>
+    <div className="mt-3 text-xl font-semibold text-emerald-400">
+      {value}
+    </div>
+  </div>
+)
+
+const FeatureCard = ({ icon, title, desc }) => (
+  <div className="flex items-start gap-4 bg-slate-900 border border-slate-800 p-6 rounded-2xl hover:border-emerald-400/40 transition">
+    <div className="text-emerald-400 mt-1">
+      {icon}
+    </div>
+    <div>
+      <h4 className="font-semibold text-lg">{title}</h4>
+      <p className="text-slate-400 mt-2">{desc}</p>
+    </div>
+  </div>
+)
+
+export default HomePage

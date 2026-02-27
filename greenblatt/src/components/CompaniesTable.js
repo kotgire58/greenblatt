@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { ArrowUp, ArrowDown, Trash2 } from "lucide-react"
 
-function CompaniesTable({ companies, deleteCompany }) {
+function CompaniesTable({ companies = [], deleteCompany }) {
   const [sortColumn, setSortColumn] = useState("greenBlattsValue")
   const [sortDirection, setSortDirection] = useState("asc")
 
@@ -16,106 +17,141 @@ function CompaniesTable({ companies, deleteCompany }) {
   }
 
   const sortedCompanies = [...companies].sort((a, b) => {
-    if (a[sortColumn] < b[sortColumn]) return sortDirection === "asc" ? -1 : 1
-    if (a[sortColumn] > b[sortColumn]) return sortDirection === "asc" ? 1 : -1
+    const aValue = a[sortColumn]
+    const bValue = b[sortColumn]
+
+    if (aValue == null) return 1
+    if (bValue == null) return -1
+
+    if (aValue < bValue) return sortDirection === "asc" ? -1 : 1
+    if (aValue > bValue) return sortDirection === "asc" ? 1 : -1
     return 0
   })
 
-  const formatNumber = (number, decimals = 0) => {
-    return number.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
-  }
-
-  const handleDelete = (id, name) => {
-    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
-      deleteCompany(id)
-    }
-  }
-
   const renderSortIcon = (column) => {
     if (column !== sortColumn) return null
-    return sortDirection === "asc" ? "▲" : "▼"
+    return sortDirection === "asc" ? (
+      <ArrowUp size={14} className="inline ml-1" />
+    ) : (
+      <ArrowDown size={14} className="inline ml-1" />
+    )
   }
 
   return (
-    <div className="overflow-x-auto">
-      <h2 className="text-2xl font-bold mb-4">Companies Greenblatt Rankings</h2>
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+
+      {/* HEADER */}
+      <div className="px-8 py-6 border-b border-slate-800">
+        <h2 className="text-2xl font-bold">
+          Ranked Companies
+        </h2>
+        <p className="text-slate-400 mt-1 text-sm">
+          Sorted by Greenblatt Composite Score
+        </p>
+      </div>
+
       {companies.length === 0 ? (
-        <p className="text-gray-500 text-center py-4">No companies found. Add a company to see it listed here.</p>
+        <div className="p-12 text-center text-slate-500">
+          No companies added yet.
+        </div>
       ) : (
-        <table className="min-w-full bg-white border border-gray-300" role="table">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-2 py-2 text-left text-xs" onClick={() => handleSort("name")}>
-                Name {renderSortIcon("name")}
-              </th>
-              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("EBIT")}>
-                EBIT {renderSortIcon("EBIT")}
-              </th>
-              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("computedEnterpriseValue")}>
-                EV {renderSortIcon("computedEnterpriseValue")}
-              </th>
-              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("earningYield")}>
-                EY {renderSortIcon("earningYield")}
-              </th>
-              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("earningYieldRank")}>
-                EY Rank {renderSortIcon("earningYieldRank")}
-              </th>
-              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("ROC")}>
-                ROC {renderSortIcon("ROC")}
-              </th>
-              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("ROCRank")}>
-                ROC Rank {renderSortIcon("ROCRank")}
-              </th>
-              <th className="px-2 py-2 text-right text-xs" onClick={() => handleSort("greenBlattsValue")}>
-                GBV {renderSortIcon("greenBlattsValue")}
-              </th>
-              <th className="px-2 py-2 text-center text-xs">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedCompanies.map((company) => (
-              <tr key={company._id} className="border-t border-gray-200 hover:bg-gray-50" role="row">
-                <td className="px-2 py-2 text-sm" role="cell">
-                  {company.name}
-                </td>
-                <td className="px-2 py-2 text-right text-sm" role="cell">
-                  {formatNumber(company.EBIT)}
-                </td>
-                <td className="px-2 py-2 text-right text-sm" role="cell">
-                  {formatNumber(company.computedEnterpriseValue)}
-                </td>
-                <td className="px-2 py-2 text-right text-sm" role="cell">
-                  {formatNumber(company.earningYield * 100, 2)}%
-                </td>
-                <td className="px-2 py-2 text-right text-sm" role="cell">
-                  {company.earningYieldRank}
-                </td>
-                <td className="px-2 py-2 text-right text-sm" role="cell">
-                  {formatNumber(company.ROC * 100, 2)}%
-                </td>
-                <td className="px-2 py-2 text-right text-sm" role="cell">
-                  {company.ROCRank}
-                </td>
-                <td className="px-2 py-2 text-right text-sm" role="cell">
-                  {company.greenBlattsValue}
-                </td>
-                <td className="px-2 py-2 text-center text-sm" role="cell">
-                  <button
-                    onClick={() => handleDelete(company._id, company.name)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs focus:outline-none focus:shadow-outline"
-                    aria-label={`Delete ${company.name}`}
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+
+            {/* TABLE HEAD */}
+            <thead className="bg-slate-950 text-slate-400 uppercase text-xs tracking-wide">
+              <tr>
+                <th
+                  className="px-6 py-4 text-left cursor-pointer hover:text-white transition"
+                  onClick={() => handleSort("ticker")}
+                >
+                  Ticker {renderSortIcon("ticker")}
+                </th>
+
+                <th
+                  className="px-6 py-4 text-right cursor-pointer hover:text-white transition"
+                  onClick={() => handleSort("earningYield")}
+                >
+                  Earnings Yield {renderSortIcon("earningYield")}
+                </th>
+
+                <th
+                  className="px-6 py-4 text-right cursor-pointer hover:text-white transition"
+                  onClick={() => handleSort("ROC")}
+                >
+                  ROC {renderSortIcon("ROC")}
+                </th>
+
+                <th
+                  className="px-6 py-4 text-right cursor-pointer hover:text-white transition"
+                  onClick={() => handleSort("greenBlattsValue")}
+                >
+                  Rank {renderSortIcon("greenBlattsValue")}
+                </th>
+
+                <th className="px-6 py-4 text-center">
+                  Action
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            {/* TABLE BODY */}
+            <tbody className="divide-y divide-slate-800">
+              {sortedCompanies.map((company) => (
+                <tr
+                  key={company._id}
+                  className="hover:bg-slate-800/40 transition-all"
+                >
+
+                  {/* TICKER */}
+                  <td className="px-6 py-4 font-semibold text-white">
+                    {company.ticker || "-"}
+                  </td>
+
+                  {/* EARNINGS YIELD */}
+                  <td className="px-6 py-4 text-right text-emerald-400 font-medium">
+                    {company.earningYield != null
+                      ? (company.earningYield * 100).toFixed(2) + "%"
+                      : "-"}
+                  </td>
+
+                  {/* ROC */}
+                  <td className="px-6 py-4 text-right text-cyan-400 font-medium">
+                    {company.ROC != null
+                      ? (company.ROC * 100).toFixed(2) + "%"
+                      : "-"}
+                  </td>
+
+                  {/* RANK BADGE */}
+                  <td className="px-6 py-4 text-right">
+                    {company.greenBlattsValue != null ? (
+                      <span className="inline-block px-3 py-1 rounded-lg bg-emerald-400/15 text-emerald-400 font-bold">
+                        #{company.greenBlattsValue}
+                      </span>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  {/* DELETE BUTTON */}
+                  <td className="px-6 py-4 text-center">
+                    <button
+                      onClick={() => deleteCompany(company._id)}
+                      className="inline-flex items-center gap-1 text-red-400 hover:text-red-300 transition"
+                    >
+                      <Trash2 size={16} />
+                      <span className="text-xs font-medium">Remove</span>
+                    </button>
+                  </td>
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )
 }
 
 export default CompaniesTable
-

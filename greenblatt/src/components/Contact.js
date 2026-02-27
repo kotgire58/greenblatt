@@ -1,77 +1,165 @@
-const Contact = () => (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Contact Me</h1>
-      <p className="mb-4">
-        I'm a student at Northeastern University, pursuing a Master of Science in Software Engineering Systems. I'm
-        currently looking for full-time opportunities in software development and engineering.
-      </p>
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h2 className="text-2xl font-semibold mb-4">Kamal Kotgire</h2>
-        <p className="mb-2">
-          <strong>Location:</strong> Boston, MA
-        </p>
-        <p className="mb-2">
-          <strong>Email:</strong>{" "}
-          <a href="mailto:kotgire.k@northeastern.edu" className="text-blue-600 hover:underline">
-            kotgire.k@northeastern.edu
-          </a>
-        </p>
-        <p className="mb-2">
-          <strong>Phone:</strong> (857)-395-2210
-        </p>
-        <p className="mb-2">
-          <strong>LinkedIn:</strong>{" "}
-          <a
-            href="https://www.linkedin.com/in/kamal-kotgire"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
-          >
-            linkedin.com/in/kamal-kotgire
-          </a>
-        </p>
-        <p className="mb-2">
-          <strong>GitHub:</strong>{" "}
-          <a
-            href="https://github.com/kamalkotgire"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
-          >
-            github.com/kamalkotgire
-          </a>
+"use client"
+
+import { Mail, Phone, Linkedin, Github, MapPin } from "lucide-react"
+
+const Contact = () => {
+  return (
+    <div className="container mx-auto px-6 py-20 max-w-5xl">
+
+      {/* HERO */}
+      <div className="text-center mb-20">
+        <h1 className="text-5xl font-extrabold tracking-tight">
+          Let’s Build Something
+          <span className="text-emerald-400"> Intelligent</span>
+        </h1>
+
+        <p className="text-slate-400 mt-6 text-lg max-w-3xl mx-auto">
+          I design and build full-stack financial systems focused on
+          quantitative ranking, portfolio analytics, and AI-driven evaluation.
+          Open to high-impact engineering roles and ambitious fintech teams.
         </p>
       </div>
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h2 className="text-2xl font-semibold mb-4">Technical Skills</h2>
-        <ul className="list-disc list-inside space-y-2">
-          <li>
-            <strong>Languages:</strong> HTML5, CSS3, Sass, C, Java, TypeScript, JavaScript, SQL, Python, JSON / XML, Linux
-          </li>
-          <li>
-            <strong>Frameworks:</strong> Node.js, React, Next.js, Vue.js, Django, Angular, Material-UI, Balsamiq, Moqup,
-            Figma
-          </li>
-          <li>
-            <strong>Database:</strong> MongoDB, MySQL, PostgreSQL, DBMS, Redis, Cloudinary, AWS RDS, DynamoDB, PowerBI
-          </li>
-          <li>
-            <strong>Cloud:</strong> AWS, Terraform, IaC, Docker, DigitalOcean, .NET, Bash
-          </li>
-          <li>
-            <strong>Dev Tools:</strong> Git, IntelliJ IDEA, Visual Studio, CI/CD pipelines, Agile, JIRA, RabbitMQ, GitHub,
-            Postman, Slack
-          </li>
-        </ul>
+
+      {/* PROFILE CARD */}
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-10 shadow-xl">
+
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10">
+
+          {/* LEFT SIDE */}
+          <div>
+            <h2 className="text-3xl font-bold">
+              Kamal Kotgire
+            </h2>
+
+            <p className="text-emerald-400 mt-2 font-semibold">
+              Quant-Focused Full Stack Engineer
+            </p>
+
+            <p className="text-slate-400 mt-6 max-w-xl leading-relaxed">
+              MS Software Engineering Systems · Northeastern University  
+              Specialized in financial systems, scalable APIs, quantitative
+              analytics platforms, and production-grade SaaS architecture.
+            </p>
+
+            <div className="mt-6 flex items-center gap-2 text-slate-400">
+              <MapPin size={16} />
+              Boston, MA
+            </div>
+          </div>
+
+          {/* RIGHT SIDE – CONTACT ACTIONS */}
+          <div className="space-y-4">
+
+            <ContactButton
+              icon={<Mail size={18} />}
+              label="Email Me"
+              value="kotgire.k@northeastern.edu"
+              link="mailto:kotgire.k@northeastern.edu"
+            />
+
+            <ContactButton
+              icon={<Phone size={18} />}
+              label="Call"
+              value="(857) 395-2210"
+              link="tel:8573952210"
+            />
+
+            <ContactButton
+              icon={<Linkedin size={18} />}
+              label="LinkedIn"
+              value="linkedin.com/in/kamal-kotgire"
+              link="https://www.linkedin.com/in/kamal-kotgire"
+            />
+
+            <ContactButton
+              icon={<Github size={18} />}
+              label="GitHub"
+              value="github.com/kamalkotgire"
+              link="https://github.com/kamalkotgire"
+            />
+
+          </div>
+
+        </div>
       </div>
-      <p className="mt-4">
-        If you have any opportunities or would like to discuss my qualifications further, please don't hesitate to reach
-        out. I'm excited about the prospect of contributing to innovative projects and continuing my growth in the field
-        of software engineering.
-      </p>
+
+      {/* EXPERTISE SECTION */}
+      <div className="mt-20 grid md:grid-cols-2 gap-10">
+
+        <SkillCard
+          title="Financial Systems"
+          items={[
+            "Factor-Based Equity Ranking",
+            "Portfolio Analytics & Weighted Exposure",
+            "Quantitative Scoring Models",
+            "Systematic Value Investing Frameworks",
+          ]}
+        />
+
+        <SkillCard
+          title="Engineering Stack"
+          items={[
+            "React / Next.js / TypeScript",
+            "Node.js / REST / GraphQL",
+            "PostgreSQL / MongoDB / Redis",
+            "AWS / Docker / Terraform",
+          ]}
+        />
+
+      </div>
+
+      {/* FINAL CTA */}
+      <div className="mt-24 text-center">
+        <p className="text-slate-400 text-lg">
+          Interested in collaborating or discussing an opportunity?
+        </p>
+
+        <a
+          href="mailto:kotgire.k@northeastern.edu"
+          className="inline-block mt-8 px-10 py-5 bg-emerald-400 text-slate-900 font-extrabold rounded-2xl hover:bg-emerald-300 transition text-lg shadow-lg"
+        >
+          Start a Conversation
+        </a>
+      </div>
+
     </div>
   )
-  
-  export default Contact
-  
-  
+}
+
+/* ===== Reusable Components ===== */
+
+const ContactButton = ({ icon, label, value, link }) => (
+  <a
+    href={link}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-center gap-4 bg-slate-950 border border-slate-800 px-6 py-4 rounded-2xl hover:border-emerald-400/40 transition"
+  >
+    <div className="text-emerald-400">
+      {icon}
+    </div>
+    <div>
+      <p className="text-sm text-slate-500">{label}</p>
+      <p className="font-semibold text-white text-sm">{value}</p>
+    </div>
+  </a>
+)
+
+const SkillCard = ({ title, items }) => (
+  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+    <h3 className="text-xl font-bold mb-6">
+      {title}
+    </h3>
+
+    <ul className="space-y-3 text-slate-400">
+      {items.map((item, index) => (
+        <li key={index} className="flex items-start gap-3">
+          <span className="w-2 h-2 bg-emerald-400 rounded-full mt-2" />
+          {item}
+        </li>
+      ))}
+    </ul>
+  </div>
+)
+
+export default Contact

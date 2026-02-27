@@ -1,219 +1,109 @@
-import { useState, useCallback } from "react"
+"use client"
+
+import { useState } from "react"
 import axios from "axios"
+import { Search, Loader2 } from "lucide-react"
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5001"
 
 function AddCompany({ refreshCompanies }) {
-  const [isManualEntry, setIsManualEntry] = useState(true)
   const [symbol, setSymbol] = useState("")
-  const [formData, setFormData] = useState({
-    name: "",
-    EBIT: "",
-    enterpriseValue: "",
-    marketCap: "",
-    debt: "",
-    cash: "",
-    netFixedAssets: "",
-    netWorkingCapital: "",
-  })
+  const [market, setMarket] = useState("US")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
-
-  const validateForm = () => {
-    if (isManualEntry) {
-      const requiredFields = ["name", "EBIT", "marketCap", "debt", "cash", "netFixedAssets", "netWorkingCapital"]
-      for (const field of requiredFields) {
-        if (!formData[field]) {
-          setError(`${field.charAt(0).toUpperCase() + field.slice(1)} is required`)
-          return false
-        }
-      }
-    } else {
-      if (!symbol) {
-        setError("Stock symbol is required")
-        return false
-      }
-    }
-    return true
-  }
-
-  const handleSubmit = useCallback(async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!validateForm()) return
+
+    if (!symbol.trim()) {
+      setError("Please enter a valid stock ticker.")
+      return
+    }
 
     setIsLoading(true)
     setError(null)
 
     try {
-      if (isManualEntry) {
-        const dataToSend = {
-          ...formData,
-          EBIT: Number.parseFloat(formData.EBIT),
-          enterpriseValue: formData.enterpriseValue ? Number.parseFloat(formData.enterpriseValue) : undefined,
-          marketCap: Number.parseFloat(formData.marketCap),
-          debt: Number.parseFloat(formData.debt),
-          cash: Number.parseFloat(formData.cash),
-          netFixedAssets: Number.parseFloat(formData.netFixedAssets),
-          netWorkingCapital: Number.parseFloat(formData.netWorkingCapital),
-        }
-        await axios.post(`${API_URL}/api/companies`, dataToSend)
-      } else {
-        await axios.get(`${API_URL}/api/company/${symbol}`)
-      }
+      const formattedSymbol =
+        market === "IN"
+          ? `${symbol.toUpperCase()}.NS`
+          : symbol.toUpperCase()
 
-      setFormData({
-        name: "",
-        EBIT: "",
-        enterpriseValue: "",
-        marketCap: "",
-        debt: "",
-        cash: "",
-        netFixedAssets: "",
-        netWorkingCapital: "",
-      })
+      await axios.get(`${API_URL}/api/companies/${formattedSymbol}`)
+
       setSymbol("")
       refreshCompanies()
     } catch (err) {
       console.error(err)
-      setError(
-        isManualEntry 
-          ? "Error adding company. Please try again." 
-          : `Error fetching company data for ${symbol}. Please check the symbol and try again.`
-      )
+      setError("Unable to fetch company data. Check the ticker.")
     } finally {
       setIsLoading(false)
     }
-  }, [isManualEntry, formData, symbol, refreshCompanies, validateForm])
+  }
 
   return (
-    <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <h2 className="text-2xl font-bold mb-4">Add Company Data</h2>
-      <div className="mb-4">
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            className="form-radio"
-            name="entryType"
-            checked={isManualEntry}
-            onChange={() => setIsManualEntry(true)}
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+
+      <h2 className="text-xl font-bold mb-6">
+        Add Company to Screener
+      </h2>
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col md:flex-row gap-4 items-stretch"
+      >
+
+        {/* INPUT FIELD */}
+        <div className="relative flex-1">
+          <Search
+            size={18}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
           />
-          <span className="ml-2">Manual Entry</span>
-        </label>
-        <label className="inline-flex items-center ml-6">
-          <input
-            type="radio"
-            className="form-radio"
-            name="entryType"
-            checked={!isManualEntry}
-            onChange={() => setIsManualEntry(false)}
-          />
-          <span className="ml-2">Fetch by Symbol</span>
-        </label>
-      </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {isManualEntry ? (
-          <>
-            <input
-              type="text"
-              name="name"
-              placeholder="Company Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            <input
-              type="number"
-              name="EBIT"
-              placeholder="EBIT"
-              value={formData.EBIT}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            <input
-              type="number"
-              name="enterpriseValue"
-              placeholder="Enterprise Value (optional)"
-              value={formData.enterpriseValue}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            <input
-              type="number"
-              name="marketCap"
-              placeholder="Market Cap"
-              value={formData.marketCap}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            <input
-              type="number"
-              name="debt"
-              placeholder="Debt"
-              value={formData.debt}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            <input
-              type="number"
-              name="cash"
-              placeholder="Cash"
-              value={formData.cash}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            <input
-              type="number"
-              name="netFixedAssets"
-              placeholder="Net Fixed Assets"
-              value={formData.netFixedAssets}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            <input
-              type="number"
-              name="netWorkingCapital"
-              placeholder="Net Working Capital"
-              value={formData.netWorkingCapital}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-          </>
-        ) : (
+
           <input
             type="text"
             value={symbol}
-            onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-            placeholder="Enter Stock Symbol"
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            onChange={(e) => setSymbol(e.target.value)}
+            placeholder="Enter ticker (AAPL, MSFT, TCS...)"
+            className="w-full pl-12 pr-4 py-4 rounded-xl bg-slate-950 border border-slate-800 focus:outline-none focus:border-emerald-400 text-white placeholder-slate-500 transition"
           />
-        )}
+        </div>
+
+        {/* MARKET SELECT */}
+        <select
+          value={market}
+          onChange={(e) => setMarket(e.target.value)}
+          className="px-4 py-4 rounded-xl bg-slate-950 border border-slate-800 focus:outline-none focus:border-emerald-400 text-white transition"
+        >
+          <option value="US">🇺🇸 US Market</option>
+          <option value="IN">🇮🇳 NSE (India)</option>
+        </select>
+
+        {/* SUBMIT BUTTON */}
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-emerald-400 text-slate-900 font-bold hover:bg-emerald-300 disabled:opacity-60 transition"
         >
-          {isLoading ? "Processing..." : isManualEntry ? "Add Company" : "Fetch Company Data"}
+          {isLoading ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              Fetching
+            </>
+          ) : (
+            "Add Company"
+          )}
         </button>
       </form>
-      {error && <div className="mt-2 text-sm text-red-600 bg-red-100 border border-red-400 rounded p-2">{error}</div>}
+
+      {/* ERROR */}
+      {error && (
+        <div className="mt-6 bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
     </div>
   )
 }
 
 export default AddCompany
-
