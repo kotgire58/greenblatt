@@ -11,7 +11,20 @@ const errorHandler = require("./middleware/error.middleware")
 const app = express()
 
 // CORS
-app.use(cors({ origin: "http://localhost:3000" }))
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://greenblatt-1.onrender.com"
+];
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 // Body parser FIRST
 app.use(express.json())
