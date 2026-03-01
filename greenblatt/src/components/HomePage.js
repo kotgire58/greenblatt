@@ -1,10 +1,14 @@
 "use client"
 
 import { Link } from "react-router-dom"
+import { useContext } from "react"
+import { AuthContext } from "../context/AuthContext"
 import { motion } from "framer-motion"
 import { TrendingUp, PieChart, ShieldCheck, BarChart3 } from "lucide-react"
 
 const HomePage = () => {
+  const { user } = useContext(AuthContext)
+
   return (
     <div className="min-h-screen px-6 py-20">
       <div className="max-w-6xl mx-auto">
@@ -27,19 +31,21 @@ const HomePage = () => {
           </p>
 
           <div className="mt-10 flex justify-center gap-6">
+
             <Link
-              to="/app"
+              to={user ? "/app" : "/auth"}
               className="px-8 py-4 rounded-xl bg-emerald-400 text-slate-900 font-bold text-lg hover:bg-emerald-300 transition shadow-lg"
             >
-              Launch Screener
+              {user ? "Launch Screener" : "Get Started"}
             </Link>
 
             <Link
-              to="/buffett"
+              to={user ? "/buffett" : "/auth"}
               className="px-8 py-4 rounded-xl border border-slate-700 text-slate-200 font-semibold hover:bg-slate-800 transition"
             >
               Buffett Analyzer
             </Link>
+
           </div>
         </motion.div>
 
@@ -107,10 +113,10 @@ const HomePage = () => {
           </p>
 
           <Link
-            to="/app"
+            to={user ? "/portfolio" : "/auth"}
             className="inline-block mt-8 px-10 py-5 bg-emerald-400 text-slate-900 font-extrabold rounded-xl hover:bg-emerald-300 transition text-lg"
           >
-            Get Started
+            {user ? "Go to Portfolio" : "Create Free Account"}
           </Link>
         </div>
 

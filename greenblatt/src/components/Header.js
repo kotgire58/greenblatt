@@ -1,18 +1,23 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { useMemo, useState, useContext } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Menu, X, Sparkles } from "lucide-react"
+import { AuthContext } from "../context/AuthContext"
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { user, logout } = useContext(AuthContext)
 
   const navItems = useMemo(
     () => [
       { name: "Home", path: "/" },
-      { name: "Screener", path: "/app" },
-      { name: "Portfolio", path: "/portfolio" },   // ✅ ADDED
+      { name: "Portfolio", path: "/portfolio" },
+        { name: "Greenblatt", path: "/greenblatt" },
+        { name: "Screener", path: "/screener" },
+
       { name: "Buffett", path: "/buffett" },
       { name: "About", path: "/about" },
       { name: "Resources", path: "/resources" },
@@ -23,104 +28,67 @@ const Header = () => {
 
   const isActive = (path) => location.pathname === path
 
-  const linkBase =
-    "px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-  const linkActive = "bg-emerald-400 text-slate-900 shadow-sm"
-  const linkIdle =
-    "text-slate-300 hover:text-white hover:bg-slate-800/70"
-
   return (
     <header className="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-md border-b border-slate-700">
       <div className="container mx-auto px-4">
         <div className="h-16 flex items-center justify-between">
-          {/* Brand */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center shadow-sm">
+
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-slate-900" />
             </div>
-            <div className="leading-tight">
-              <div className="text-base font-bold tracking-tight text-white">
-                Quant<span className="text-emerald-400">Edge</span>
-              </div>
-              <div className="text-[11px] text-slate-400 -mt-0.5">
-                Systematic Value Investing
-              </div>
+            <div className="text-white font-bold">
+              Quant<span className="text-emerald-400">Edge</span>
             </div>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={[
-                  linkBase,
-                  isActive(item.path) ? linkActive : linkIdle,
-                ].join(" ")}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  isActive(item.path)
+                    ? "bg-emerald-400 text-slate-900"
+                    : "text-slate-300 hover:bg-slate-800"
+                }`}
               >
                 {item.name}
               </Link>
             ))}
           </nav>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-2">
-            <Link
-              to="/app"
-              className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white text-sm font-semibold border border-slate-700 transition"
-            >
-              Open Screener
-            </Link>
+          <div className="hidden md:flex items-center gap-3">
+            {!user ? (
+              <Link
+                to="/auth"
+                className="px-4 py-2 bg-emerald-400 text-slate-900 rounded font-semibold"
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to logout?")) {
+                    logout()
+                    navigate("/")
+                  }
+                }}
+                className="px-4 py-2 bg-red-600 rounded text-white hover:bg-red-700 transition"
+              >
+                Logout
+              </button>
+            )}
           </div>
 
-          {/* Mobile Button */}
           <button
-            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-slate-700 bg-white/5 hover:bg-white/10 transition"
-            onClick={() => setIsMenuOpen((v) => !v)}
-            aria-label="Toggle menu"
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? (
-              <X className="w-5 h-5 text-white" />
-            ) : (
-              <Menu className="w-5 h-5 text-white" />
-            )}
+            {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t border-slate-700 bg-slate-950/70 backdrop-blur-md">
-          <div className="container mx-auto px-4 py-3">
-            <div className="grid grid-cols-2 gap-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={[
-                    "px-3 py-3 rounded-xl border text-sm font-semibold transition",
-                    isActive(item.path)
-                      ? "bg-emerald-400 text-slate-900 border-emerald-300"
-                      : "bg-white/5 text-slate-200 border-slate-800 hover:bg-white/10",
-                  ].join(" ")}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-
-            <Link
-              to="/app"
-              onClick={() => setIsMenuOpen(false)}
-              className="mt-3 w-full inline-flex items-center justify-center px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-900 font-extrabold border border-emerald-300/30"
-            >
-              Get Started
-            </Link>
-          </div>
-        </div>
-      )}
     </header>
   )
 }

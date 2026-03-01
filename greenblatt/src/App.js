@@ -1,114 +1,110 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom"
 import axios from "axios"
 
 import Header from "./components/Header"
 import HomePage from "./components/HomePage"
 import About from "./components/About"
-import CompanyManagement from "./components/CompanyManagement"
 import Resources from "./components/Resources"
 import Contact from "./components/Contact"
 import BuffettAnalyzer from "./components/BuffettAnalyzer"
+import Auth from "./components/Auth"
+import Screener from "./components/Screener"
 import Portfolio from "./components/Portfolio"
+import GreenblattPortfolio from "./components/GreenblattPortfolio"
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5001"
+/* ================= AXIOS INTERCEPTOR ================= */
 
-function App() {
-  const [companies, setCompanies] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token")
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
 
-  const refreshCompanies = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
+/* ================= PROTECTED ROUTE WRAPPER ================= */
 
-      const response = await axios.get(`${API_URL}/api/companies`)
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("token")
 
-      // In case backend returns { companies: [...] }
-      const data = response.data.companies || response.data
-
-      setCompanies(data)
-    } catch (err) {
-      console.error("Error details:", err.response?.data || err.message)
-
-      setError(
-        `Error fetching companies: ${
-          err.response?.data?.error || err.message
-        }`
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    refreshCompanies()
-  }, [refreshCompanies])
-
-  const deleteCompany = async (id) => {
-    try {
-      await axios.delete(`${API_URL}/api/companies/${id}`)
-      refreshCompanies()
-    } catch (err) {
-      console.error("Error deleting company:", err)
-
-      setError(
-        `Error deleting company: ${
-          err.response?.data?.error || err.message
-        }`
-      )
-    }
+  if (!token) {
+    return <Navigate to="/auth" replace />
   }
 
+  return children
+}
+
+/* ================= MAIN APP ================= */
+
+function App() {
   return (
     <Router>
-      {/* 🌌 Global Dark Quant Theme */}
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-slate-100 flex flex-col">
 
-        {/* Header */}
         <Header />
 
-        {/* Main Content */}
         <main className="flex-grow relative">
-
-          {/* Subtle grid overlay */}
           <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(circle_at_1px_1px,_#ffffff_1px,_transparent_0)] bg-[size:20px_20px]" />
 
           <div className="relative z-10">
             <Routes>
 
+              {/* Public */}
               <Route path="/" element={<HomePage />} />
-
-              <Route
-                path="/app"
-                element={
-                  <CompanyManagement
-                    companies={companies}
-                    loading={loading}
-                    error={error}
-                    refreshCompanies={refreshCompanies}
-                    deleteCompany={deleteCompany}
-                  />
-                }
-              />
-
-              <Route path="/buffett" element={<BuffettAnalyzer />} />
-              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/auth" element={<Auth />} />
               <Route path="/about" element={<About />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/contact" element={<Contact />} />
+
+              {/* Protected */}
+              <Route
+                path="/greenblatt"
+                element={
+                  <ProtectedRoute>
+                    <GreenblattPortfolio />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/screener"
+                element={
+                  <ProtectedRoute>
+                    <Screener />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/portfolio"
+                element={
+                  <ProtectedRoute>
+                    <Portfolio />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/buffett"
+                element={
+                  <ProtectedRoute>
+                    <BuffettAnalyzer />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Catch-all redirect */}
+              <Route path="*" element={<Navigate to="/" replace />} />
 
             </Routes>
           </div>
         </main>
 
-        {/* Premium Footer */}
+        {/* Footer */}
         <footer className="bg-slate-950 border-t border-slate-800 py-8">
           <div className="container mx-auto px-4 text-center">
-
             <div className="text-lg font-bold tracking-tight">
               Quant<span className="text-emerald-400">Edge</span>
             </div>
@@ -120,9 +116,9 @@ function App() {
             <p className="text-slate-500 text-xs mt-4">
               © 2025 Kamal Kotgire · Built with React, Node.js, Quant Metrics
             </p>
-
           </div>
         </footer>
+
       </div>
     </Router>
   )

@@ -2,6 +2,11 @@ const mongoose = require("mongoose")
 
 const PortfolioHoldingSchema = new mongoose.Schema(
   {
+    portfolio: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Portfolio",
+      required: true
+    },
     ticker: {
       type: String,
       required: true,
