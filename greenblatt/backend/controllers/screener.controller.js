@@ -1,7 +1,6 @@
 // controllers/screener.controller.js
 
 const calculateGreenblatt = require("../services/greenblatt.service")
-const calculateBuffettScore = require("../services/buffett.service")
 const analyzeWithLLM = require("../services/llm.service")
 const redis = require("../services/redis.service")
 
