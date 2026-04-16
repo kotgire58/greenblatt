@@ -33,6 +33,10 @@ exports.getScreenerAnalysis = async (req, res) => {
     })
 
   } catch (err) {
+    console.error(
+      `[screener] Failed analysis for '${req.params.symbol}':`,
+      err?.stack || err?.message || err
+    )
     res.status(500).json({ error: err.message })
   }
 }
